@@ -1,13 +1,16 @@
 package com.lovelyshaking.QRFilesTransfer.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -38,6 +41,7 @@ public class DownloadFileController {
 			if (file.exists()) {
 				//generate file download QRCode
 				res = fileDownloadService.genFileQRCode(path);
+				System.out.println(res.length);
 			}
 			else {
 				ClassPathResource classPathResource = new ClassPathResource("static/no.jpg");
@@ -51,5 +55,38 @@ public class DownloadFileController {
 			e.printStackTrace();
 		}
 		return res;
+	}
+	
+	@RequestMapping(value = "/fileDownload")
+	@ResponseBody
+	public void getFile(@RequestParam("filePath") String filePath,HttpServletResponse response) {
+		System.out.println(filePath);
+		File file = new File(filePath);
+		String name = file.getName();
+		response.reset();
+		response.setContentType("application/octet-stream");
+		response.setCharacterEncoding("utf-8");
+		response.setContentLength((int) file.length());
+		response.setHeader("Content-Disposition", "attachment;filename=" + name);
+        byte[] buff = new byte[2048];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(file));
+            int i = 0;
+            while ((i = bis.read(buff)) != -1) {
+                os.write(buff, 0, i);
+                os.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }	
 	}
 }

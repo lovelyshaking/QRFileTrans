@@ -3,6 +3,7 @@ package com.lovelyshaking.QRFilesTransfer.services;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,15 +27,19 @@ public class FileDownloadService {
 	private ServerConfig serverConfig;
 	public byte[] genFileQRCode(String filePath) {
 		// TODO Auto-generated constructor stub
+		System.out.println(filePath);
+		String encodedFilePathString = URLEncoder.encode(filePath);
 		String serverip = serverConfig.getUrl();
-		String qRString = serverip + "/get/fileDownload?filepath="+filePath;
+
+		String qRString = serverip + "/get/fileDownload?filePath="+encodedFilePathString;
+
 		 Map<EncodeHintType, Object> hints = new HashMap<>();
          hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
          hints.put(EncodeHintType.MARGIN, 0);
          QRCodeWriter qrCodeWriter = new QRCodeWriter();
          byte[] imageByte =null;
          try {
-			BitMatrix bm = qrCodeWriter.encode(qRString, BarcodeFormat.QR_CODE, 200, 200, hints);
+			BitMatrix bm = qrCodeWriter.encode(qRString, BarcodeFormat.QR_CODE, 100, 100, hints);
 			BufferedImage image = MatrixToImageWriter.toBufferedImage(bm);
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 	        //将图片写入输出流

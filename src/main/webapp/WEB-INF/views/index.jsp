@@ -47,9 +47,11 @@
                         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                             <div class="menu_section">
                                 <ul class="nav side-menu">
-                                    <li><a href="index"><i class="fa fa-home"></i> FileDownload <span class="fa fa-chevron-down"></span></a>
+                                    <li><a href="index"><i class="fa fa-home"></i> FileDownload <span
+                                            class="fa fa-chevron-down"></span></a>
                                     </li>
-                                    <li><a href="fileUpload"><i class="fa fa-edit"></i> FileUpload <span class="fa fa-chevron-down"></span></a>
+                                    <li><a href="fileUpload"><i class="fa fa-edit"></i> FileUpload <span
+                                            class="fa fa-chevron-down"></span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -69,8 +71,9 @@
                                     <form id="fileDownloadForm" data-parsley-validate class="form-horizontal form-label-left">
 
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="file-name">File Name (Full Path)<span class="required">*</span>
-                                </label>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="file-name">File
+                                            Name (Full Path)<span class="required">*</span>
+                                        </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <input type="text" id="filePath" required="required" class="form-control col-md-7 col-xs-12">
                                             </div>
@@ -79,7 +82,8 @@
                                         <div class="ln_solid"></div>
                                         <div class="form-group">
                                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                                <button class="btn btn-success" onclick="getQRCode()">Gen QRCode</button>
+                                                <button class="btn btn-success" type="button" onclick="getQRCode()">Gen
+                                                QRCode</button>
                                                 <button class="btn btn-primary" type="reset">Reset</button>
                                             </div>
                                         </div>
@@ -87,9 +91,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-7 col-sm-7 col-xs-12">
+                        <div class="col-md-2 col-sm-2 col-xs-12">
                             <div class="product-image">
-                                <img />
+                                <img id="fileImage" />
                             </div>
                         </div>
                     </div>
@@ -113,8 +117,6 @@
         <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
         <!-- FastClick -->
         <script src="../vendors/fastclick/lib/fastclick.js"></script>
-        <!-- NProgress -->
-        <script src="../vendors/nprogress/nprogress.js"></script>
         <!-- gauge.js -->
         <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
         <!-- bootstrap-progressbar -->
@@ -123,23 +125,28 @@
         <script src="../vendors/iCheck/icheck.min.js"></script>
         <!-- Skycons -->
         <script src="../vendors/skycons/skycons.js"></script>
-        <!-- Flot -->
-        <script src="../vendors/Flot/jquery.flot.js"></script>
-        <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-        <script src="../vendors/Flot/jquery.flot.time.js"></script>
-        <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-        <script src="../vendors/Flot/jquery.flot.resize.js"></script>
-        <!-- Flot plugins -->
-        <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-        <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-        <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
-
         <!-- Custom Theme Scripts -->
         <script src="../build/js/custom.js"></script>
         <script>
             function getQRCode() {
-                var filePath = document.getElementById("filePath").value;
-                alert(filePath);
+                var filePath = encodeURI(document.getElementById("filePath").value);
+                var url = "/get/getQRCode?filePath=" + filePath
+                debugger
+                console.log(url);
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", url, true);
+                xhr.responseType = "blob";
+                xhr.onload = function() {
+                    if (this.status == 200) {
+                        var blob = this.response;
+                        var img = document.getElementById("fileImage");
+                        img.onload = function(e) {
+                            window.URL.revokeObjectURL(img.src);
+                        };
+                        img.src = window.URL.createObjectURL(blob);
+                    }
+                };
+                xhr.send();
             }
         </script>
 
