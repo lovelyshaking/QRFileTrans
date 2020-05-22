@@ -11,4 +11,8 @@ public class MainController {
 	public String getMainPage(Model model) {
 		return "index";
 	}
+	@RequestMapping("/fileUpload")
+	public String getUploadPage(Model model) {
+		return "fileupload";
+	}
 }

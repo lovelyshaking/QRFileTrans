@@ -68,7 +68,8 @@ public class DownloadFileController {
 		response.setCharacterEncoding("utf-8");
 		response.setContentLength((int) file.length());
 		response.setHeader("Content-Disposition", "attachment;filename=" + name);
-        byte[] buff = new byte[2048];
+		response.addHeader("Content-Length", "" + file.length());
+        byte[] buff = new byte[1024*1024*10];
         BufferedInputStream bis = null;
         OutputStream os = null;
         try {
@@ -77,8 +78,9 @@ public class DownloadFileController {
             int i = 0;
             while ((i = bis.read(buff)) != -1) {
                 os.write(buff, 0, i);
-                os.flush();
             }
+            os.flush();
+            os.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
