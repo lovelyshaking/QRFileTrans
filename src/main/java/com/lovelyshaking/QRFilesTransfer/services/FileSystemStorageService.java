@@ -27,6 +27,9 @@ public class FileSystemStorageService implements StorageService{
 	public FileSystemStorageService(StorageProperties properties) {
 		this.rootLocation = Paths.get(properties.getLocation());
 	}
+	/**
+	 * @throws StorageException
+	 */
 	@Override
 	public void store(MultipartFile file) {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());

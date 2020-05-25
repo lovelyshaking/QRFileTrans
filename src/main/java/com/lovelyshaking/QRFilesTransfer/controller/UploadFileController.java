@@ -35,13 +35,17 @@ public class UploadFileController {
 	}
 	
 	@PostMapping("/uploadFile")
+	@ResponseBody
 	public String handleFileUpload(@RequestParam("fileupload") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
 
-		storageService.store(file);
-		redirectAttributes.addFlashAttribute("message",
-				"You successfully uploaded " + file.getOriginalFilename() + "!");
-
-		return "redirect:/upload";
+		try {
+			storageService.store(file);
+			return "File "+file.getOriginalFilename()+" Upload Success!";
+		} catch (Exception e) {
+			// TODO: handle exception
+			return "File "+file.getOriginalFilename()+" Upload Failed!";
+		}
+		
 	}
 }

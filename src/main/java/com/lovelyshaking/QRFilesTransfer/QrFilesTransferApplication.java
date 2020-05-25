@@ -18,7 +18,7 @@ public class QrFilesTransferApplication {
 	@Bean
 	CommandLineRunner init(StorageService storageService) {
 		return (args) -> {
-			storageService.deleteAll();
+			//storageService.deleteAll();
 			storageService.init();
 		};
 	}
